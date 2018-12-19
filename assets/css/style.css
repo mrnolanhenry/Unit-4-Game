@@ -1,0 +1,73 @@
+body {
+    background-image: url("../images/rotj_001.jpg");
+    background-repeat: repeat;
+    box-sizing: border-box;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+
+
+
+
+header, main{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-basis: auto;
+    text-align: center;
+}
+
+
+.character-option, .enemy-option, .attacker-option {
+    background-color:grey;
+    color: yellow;
+    display: flex;
+    flex-direction: column;
+    border: solid;
+    border-width:2px;
+    justify-content: center;
+    align-items: center;
+    flex-basis: auto;
+    padding:10px;
+    text-align: center;
+}
+
+.enemy-option {
+    border-color: red;
+}
+
+.attacker-option {
+    border-color: green;
+}
+
+.character-option:hover .character-pic,
+.enemy-option:hover .character-pic,
+.attacker-option:hover .character-pic {
+    transition: .5s ease;
+    opacity: 0.3;
+    -webkit-filter: hue-rotate(240deg) saturate(3.3);
+  }
+  
+  .character-option:hover .character-stats,
+  .enemy-option:hover .character-stats,
+  .attacker-option:hover .character-stats {
+    transition: .5s ease;
+    opacity: 1;
+  }
+
+#character-row, #attacker-row, #enemies-row {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+#character-menu, #attacker-menu, #enemies-menu, #arena {
+    color: yellow;
+}
+
+.character-stats {
+    opacity: 0;
+    transform: translate(-0%, -500%);
+    -ms-transform: translate(-0%, -500%);
+}
+  
