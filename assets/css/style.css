@@ -69,7 +69,7 @@ header, main{
 
 .character-stats {
     opacity: 0;
-    transform: translate(-0%, -500%);
-    -ms-transform: translate(-0%, -500%);
+    transform: translate(-0%, -400%);
+    -ms-transform: translate(-0%, -400%);
 }
   

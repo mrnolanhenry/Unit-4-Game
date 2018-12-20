@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function initGame () {
 
     let wicket = {
         name: "Wicket",
@@ -33,6 +33,8 @@ $(document).ready(function () {
     }
 
     let characters = [wicket, weazel, wodibin, wollivan];
+    let numAttacks = 0;
+    let defenderSelected = false;
 
     // Display character selection menu
     characters.forEach(function (element) {
@@ -45,6 +47,13 @@ $(document).ready(function () {
         // This if statement stops from adding more characters to attacker menu
         // should probably be replaced with something better later
         if ($(this).parent().attr("id") === "character-row") {
+
+
+            //Display various menu headings
+            $("#attacker-menu").prepend("Your character:")
+            $("#enemies-menu").prepend("Enemies to attack:")
+            
+
             // Move character to 'Your Character' attacker menu section 
             $("#attacker-row").append($(this));
             $(this).attr("class", "attacker-option");
@@ -54,19 +63,65 @@ $(document).ready(function () {
 
             // Add character-option class with enemies-option class
             $('#enemies-row').children($('.character-option')).each(function () {
-                $(this).attr("class", "character-option enemies-option");
+                $(this).attr("class", "enemies-option");
+
+                // Remove attack power stat from displaying
+                $(this).find($(".character-stats")).empty();
+                $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
+                $(this).find($(".character-stats")).append("HP: " + $(this).attr("HP"));
             });
 
             // Remove original character-select menu
             $("#character-menu").detach();
         }
-        else if ($(this).parent().attr("id") === "enemies-row") {
-            console.log("check!")
+        else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
+            defenderSelected = true;
+
             // Move character to 'Defender' section 
+            $("#defender-row").empty();
             $("#defender-row").append($(this));
 
             // // Add character-option class with defender-option class
-            $(this).attr("class", "character-option defender-option");
+            $(this).attr("class", "defender-option");
+        }
+    });
+
+    $("#attackBtn").on("click", function () {
+        if (defenderSelected) {
+            numAttacks++;
+            let attackerHP = parseInt($(".attacker-option").attr("HP"));
+            let defenderHP = parseInt($(".defender-option").attr("HP"));
+            let currentAttack = parseInt($(".attacker-option").attr("attackPower")) * numAttacks;
+            let counterAttack = parseInt($(".defender-option").attr("counterAttackPower"));
+            attackerHP = attackerHP - counterAttack;
+            defenderHP = defenderHP - currentAttack;
+            $(".attacker-option").attr("HP", attackerHP);
+            $(".defender-option").attr("HP", defenderHP);
+            $(".attacker-option").find($(".character-stats")).empty();
+            $(".attacker-option").find($(".character-stats")).append("Attack Power: " + currentAttack + "<br>");
+            $(".attacker-option").find($(".character-stats")).append("HP: " + attackerHP);
+            $(".defender-option").find($(".character-stats")).empty();
+            $(".defender-option").find($(".character-stats")).append("Counter Power: " + counterAttack + "<br>");
+            $(".defender-option").find($(".character-stats")).append("HP: " + defenderHP);
+
+            if (attackerHP <= 0) {
+                // Create Restart button, display losing message
+                $("#defender-row").text("You've been defeated! Hit restart to redeem yourself.")
+
+            } else if (defenderHP <= 0) {
+                $(".defender-option").detach();
+                defenderSelected = false;
+                if ($('.enemies-option').length !== 0 ) {
+                    $("#defender-row").text("Opponent defeated! Select another defender.")
+                } 
+                else {
+                    //Create Restart button, display winning message
+                    $("#defender-row").text("All opponents defeated! Warwick Davis would be proud.")
+                }
+            }
+        }
+        else {
+            $("#defender-row").text("No opponent selected.")
         }
     });
 
@@ -76,6 +131,7 @@ $(document).ready(function () {
         let newDivStats = $("<div>");
 
         newDiv.attr("class", "character-option");
+        newDiv.attr("name", character.name);
         newDiv.attr("attackPower", character.attackPower);
         newDiv.attr("counterAttackPower", character.counterAttackPower);
         newDiv.attr("HP", character.HP);
