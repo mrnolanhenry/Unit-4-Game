@@ -62,28 +62,17 @@ $(document).ready(function () {
         }
     });
 
+    // Upon clicking a character in the enemies available menu
     $(".enemy-option").on("click", function () {
 
         // This if statement should probably be replaced with something better later
-        if (this.getAttribute("class") === "enemy-option") {
-            // Move character to 'Your Character' attacker menu section 
-            $("#attacker-row").append($(this));
-            $(this).attr("class", "attacker-option");
-
-            // Move other characters to enemies menu to select an opponent
-            $("#enemies-row").append($("#character-row").contents());
-
-            // Replace character-option class with enemy-option class
-            $('#enemies-row').children($('.character-option')).each(function () {
-                $(this).attr("class", "enemy-option");
-            });
-
-            // Remove original character-select menu
-            $("#character-menu").detach();
-        }
+        // if (this.getAttribute("class") === "enemy-option") {
+        console.log("check!")
+        // Move character to 'Defender' section 
+        $("#defender-row").append($(this));
+        $(this).attr("class", "defender-option");
+        // }
     });
-
-
 
     function displayCharacterSelect(character) {
         let newDiv = $("<div>");

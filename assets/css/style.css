@@ -42,20 +42,22 @@ header, main{
 
 .character-option:hover .character-pic,
 .enemy-option:hover .character-pic,
-.attacker-option:hover .character-pic {
+.attacker-option:hover .character-pic,
+.defender-option:hover .character-pic {
     transition: .5s ease;
     opacity: 0.3;
     -webkit-filter: hue-rotate(240deg) saturate(3.3);
   }
   
-  .character-option:hover .character-stats,
-  .enemy-option:hover .character-stats,
-  .attacker-option:hover .character-stats {
+.character-option:hover .character-stats,
+.enemy-option:hover .character-stats,
+.attacker-option:hover .character-stats,
+.defender-option:hover .character-stats {
     transition: .5s ease;
     opacity: 1;
   }
 
-#character-row, #attacker-row, #enemies-row {
+#character-row, #attacker-row, #enemies-row, #defender-row {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
