@@ -1,4 +1,4 @@
-$(document).ready(function initGame () {
+$(document).ready(function () {
 
     let wicket = {
         name: "Wicket",
@@ -36,10 +36,20 @@ $(document).ready(function initGame () {
     let numAttacks = 0;
     let defenderSelected = false;
 
-    // Display character selection menu
-    characters.forEach(function (element) {
-        displayCharacterSelect(element);
-    });
+    let restartBtn = $("<button>");
+    restartBtn.text("Restart");
+    restartBtn.attr("id", "restartBtn");
+
+    let startGame = function initGame() {
+
+        // Display character selection menu
+        characters.forEach(function (element) {
+            displayCharacterSelect(element);
+        });
+        $("#character-menu").prepend("Select a character: ")
+    };
+
+    startGame();
 
     // Upon clicking a character from character-select menu
     $(".character-option").on("click", function () {
@@ -48,11 +58,9 @@ $(document).ready(function initGame () {
         // should probably be replaced with something better later
         if ($(this).parent().attr("id") === "character-row") {
 
-
             //Display various menu headings
             $("#attacker-menu").prepend("Your character:")
             $("#enemies-menu").prepend("Enemies to attack:")
-            
 
             // Move character to 'Your Character' attacker menu section 
             $("#attacker-row").append($(this));
@@ -72,7 +80,7 @@ $(document).ready(function initGame () {
             });
 
             // Remove original character-select menu
-            $("#character-menu").detach();
+            $("#character-menu").empty();
         }
         else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
             defenderSelected = true;
@@ -81,11 +89,15 @@ $(document).ready(function initGame () {
             $("#defender-row").empty();
             $("#defender-row").append($(this));
 
+            // Clear old fight message
+            $("#fight-message").empty();
+
             // // Add character-option class with defender-option class
             $(this).attr("class", "defender-option");
         }
     });
 
+    // Upon clicking attack button
     $("#attackBtn").on("click", function () {
         if (defenderSelected) {
             let defender = $(".defender-option")
@@ -108,25 +120,39 @@ $(document).ready(function initGame () {
             defender.find($(".character-stats")).append("HP: " + defenderHP);
 
             if (attackerHP <= 0) {
-                // Create Restart button, display losing message
+                // Create Restart button 
+                $("#restart").append(restartBtn);
+
+                // Display losing message
                 $("#fight-message").text("You've been defeated! Hit restart to redeem yourself.")
 
             } else if (defenderHP <= 0) {
                 defender.detach();
                 defenderSelected = false;
-                if ($('.enemies-option').length !== 0 ) {
+                if ($('.enemies-option').length !== 0) {
                     $("#fight-message").text("You defeated " + defender.attr("name") + "! Select another opponent.")
-                } 
+                }
                 else {
-                    //Create Restart button, display winning message
+                    // Create Restart button
+                    $("#restart").append(restartBtn);
+
+                    // Display winning message
+                    $("#restart").html("<button id='restartBtn'>Restart</button>");
                     $("#fight-message").text("All opponents defeated! Warwick Davis would be proud.")
                 }
             }
         }
         else {
+            $("#fight-message").empty();
             $("#defender-row").text("No opponent selected.")
         }
     });
+
+    // Upon clicking restart button
+    $("#restart").on("click", restartBtn, function () {
+        document.location.reload(true);
+    });
+
 
     function displayCharacterSelect(character) {
         let newDiv = $("<div>");
@@ -150,5 +176,6 @@ $(document).ready(function initGame () {
         newDiv.append(newDivStats);
 
         $("#character-row").append(newDiv)
+        // console.log(character);
     }
 });
