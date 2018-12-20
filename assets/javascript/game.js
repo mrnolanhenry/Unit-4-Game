@@ -44,7 +44,7 @@ $(document).ready(function () {
 
         // This if statement stops from adding more characters to attacker menu
         // should probably be replaced with something better later
-        if (this.getAttribute("class") === "character-option") {
+        if ($(this).parent().attr("id") === "character-row") {
             // Move character to 'Your Character' attacker menu section 
             $("#attacker-row").append($(this));
             $(this).attr("class", "attacker-option");
@@ -52,26 +52,22 @@ $(document).ready(function () {
             // Move other characters to enemies menu to select an opponent
             $("#enemies-row").append($("#character-row").contents());
 
-            // Replace character-option class with enemy-option class
+            // Add character-option class with enemies-option class
             $('#enemies-row').children($('.character-option')).each(function () {
-                $(this).attr("class", "enemy-option");
+                $(this).attr("class", "character-option enemies-option");
             });
 
             // Remove original character-select menu
             $("#character-menu").detach();
         }
-    });
+        else if ($(this).parent().attr("id") === "enemies-row") {
+            console.log("check!")
+            // Move character to 'Defender' section 
+            $("#defender-row").append($(this));
 
-    // Upon clicking a character in the enemies available menu
-    $(".enemy-option").on("click", function () {
-
-        // This if statement should probably be replaced with something better later
-        // if (this.getAttribute("class") === "enemy-option") {
-        console.log("check!")
-        // Move character to 'Defender' section 
-        $("#defender-row").append($(this));
-        $(this).attr("class", "defender-option");
-        // }
+            // // Add character-option class with defender-option class
+            $(this).attr("class", "character-option defender-option");
+        }
     });
 
     function displayCharacterSelect(character) {
@@ -80,6 +76,9 @@ $(document).ready(function () {
         let newDivStats = $("<div>");
 
         newDiv.attr("class", "character-option");
+        newDiv.attr("attackPower", character.attackPower);
+        newDiv.attr("counterAttackPower", character.counterAttackPower);
+        newDiv.attr("HP", character.HP);
         newDiv.append(character.name);
 
         newDivPic.attr("class", "character-pic");
@@ -87,8 +86,8 @@ $(document).ready(function () {
         newDiv.append(newDivPic);
 
         newDivStats.attr("class", "character-stats");
-        newDivStats.append("Attack Power: " + character.attackPower + "<br>");
-        newDivStats.append("HP: " + character.HP);
+        newDivStats.append("Attack Power: " + newDiv.attr("attackPower") + "<br>");
+        newDivStats.append("HP: " + newDiv.attr("HP"));
         newDiv.append(newDivStats);
 
         $("#character-row").append(newDiv)

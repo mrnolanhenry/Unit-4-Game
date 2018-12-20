@@ -18,7 +18,7 @@ header, main{
 }
 
 
-.character-option, .enemy-option, .attacker-option {
+.character-option, .enemies-option, .attacker-option, .defender-option {
     background-color:grey;
     color: yellow;
     display: flex;
@@ -32,7 +32,7 @@ header, main{
     text-align: center;
 }
 
-.enemy-option {
+.enemies-option, .defender-option {
     border-color: red;
 }
 
@@ -41,7 +41,7 @@ header, main{
 }
 
 .character-option:hover .character-pic,
-.enemy-option:hover .character-pic,
+.enemies-option:hover .character-pic,
 .attacker-option:hover .character-pic,
 .defender-option:hover .character-pic {
     transition: .5s ease;
@@ -50,7 +50,7 @@ header, main{
   }
   
 .character-option:hover .character-stats,
-.enemy-option:hover .character-stats,
+.enemies-option:hover .character-stats,
 .attacker-option:hover .character-stats,
 .defender-option:hover .character-stats {
     transition: .5s ease;
