@@ -40,6 +40,11 @@ $(document).ready(function () {
     restartBtn.text("Restart");
     restartBtn.attr("id", "restartBtn");
 
+    let attackBtn = $("<button>");
+    attackBtn.text("Attack");
+    attackBtn.attr("id", "attackBtn");
+
+
     let startGame = function initGame() {
 
         // Display character selection menu
@@ -51,6 +56,9 @@ $(document).ready(function () {
         // Hide fight-section and defender menu until attacker and defender are selected
         $("#fight-section").hide();
         $("#defender-menu").hide();
+
+        // Create attack button
+        $("#fight-section").prepend(attackBtn);
     };
 
     startGame();
@@ -168,7 +176,6 @@ $(document).ready(function () {
                 else {
                     // Create Restart button
                     $("#restart").append(restartBtn);
-                    $("#restart").html("<button id='restartBtn'>Restart</button>");
 
                     // Hide attack button
                     $("#attackBtn").hide();
