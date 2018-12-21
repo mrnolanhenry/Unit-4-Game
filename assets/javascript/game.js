@@ -3,8 +3,8 @@ $(document).ready(function () {
     let wicket = {
         name: "Wicket",
         picture: "<img src='assets/images/Wicket-small.png' />",
-        attackPower: 8,
-        counterAttackPower: 6,
+        attackPower: 6,
+        counterAttackPower: 7,
         HP: 100
     };
 
@@ -19,17 +19,17 @@ $(document).ready(function () {
     let wodibin = {
         name: "Wodibin",
         picture: "<img src='assets/images/Wodibin-small.png' />",
-        attackPower: 5,
-        counterAttackPower: 8,
-        HP: 150
+        attackPower: 2,
+        counterAttackPower: 10,
+        HP: 140
     }
 
     let wollivan = {
         name: "Wollivan",
         picture: "<img src='assets/images/Wollivan-small.png' />",
-        attackPower: 7,
-        counterAttackPower: 7,
-        HP: 130
+        attackPower: 3,
+        counterAttackPower: 9,
+        HP: 120
     }
 
     let characters = [wicket, weazel, wodibin, wollivan];
@@ -46,21 +46,24 @@ $(document).ready(function () {
         characters.forEach(function (element) {
             displayCharacterSelect(element);
         });
-        $("#character-menu").prepend("Select a character: ")
+        $("#character-menu").prepend("<p>Select a character:</p>")
+
+        // Hide fight-section and defender menu until attacker and defender are selected
+        $("#fight-section").hide();
+        $("#defender-menu").hide();
     };
 
     startGame();
 
-    // Upon clicking a character from character-select menu
+    // Upon clicking a character 
     $(".character-option").on("click", function () {
 
-        // This if statement stops from adding more characters to attacker menu
-        // should probably be replaced with something better later
+        // If character clicked is from character-select menu
         if ($(this).parent().attr("id") === "character-row") {
 
             //Display various menu headings
-            $("#attacker-menu").prepend("Your character:")
-            $("#enemies-menu").prepend("Enemies to attack:")
+            $("#attacker-menu").prepend("<p>Your character:</p>")
+            $("#enemies-menu").prepend("<p>Select an opponent:</p>")
 
             // Move character to 'Your Character' attacker menu section 
             $("#attacker-row").append($(this));
@@ -82,11 +85,14 @@ $(document).ready(function () {
             // Remove original character-select menu
             $("#character-menu").empty();
         }
+
+        // If character clicked is from enemy-select menu (and an enemy hasn't already been selected)
         else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
             defenderSelected = true;
 
             // Move character to 'Defender' section 
             $("#defender-row").empty();
+            // $("#defender-menu").prepend("Defender: <br>");
             $("#defender-row").append($(this));
 
             // Clear old fight message
@@ -97,6 +103,10 @@ $(document).ready(function () {
 
             // Hide enemies-menu temporarily
             $("#enemies-menu").hide();
+
+            // Show fight-section and defender menu again
+            $("#fight-section").show();
+            $("#defender-menu").show();
         }
     });
 
@@ -133,31 +143,42 @@ $(document).ready(function () {
 
                 // Display losing message
                 $("#fight-message").text("You've been defeated! Hit restart to redeem yourself.")
-            } 
+            }
             // Upon opponent death
             else if (defenderHP <= 0) {
                 //Remove opponent
                 defender.detach();
                 defenderSelected = false;
 
-                // Show enemies menu again
-                $("#enemies-menu").show();
+                // Hide defender menu
+                $("#defender-menu").hide();
+
+                // If enemies remain
                 if ($('.enemies-option').length !== 0) {
-                    $("#fight-message").text("You defeated " + defender.attr("name") + "! Select another opponent.")
+                // Hide fight-section until new opponent is selected
+                $("#fight-section").hide();
+
+                    // Show enemies menu again
+                    $("#enemies-menu").show();
+                    $("#fight-message").text("You defeated " + defender.attr("name") + "!")
                 }
                 else {
                     // Create Restart button
                     $("#restart").append(restartBtn);
+                    $("#restart").html("<button id='restartBtn'>Restart</button>");
+
+                    // Hide attack button
+                    $("#attackBtn").hide();
 
                     // Display winning message
-                    $("#restart").html("<button id='restartBtn'>Restart</button>");
                     $("#fight-message").text("All opponents defeated! Warwick Davis would be proud.")
+                    
                 }
             }
         }
         else {
             $("#fight-message").empty();
-            $("#defender-row").text("No opponent selected.")
+            $("#defender-row").text("<p>No opponent selected.</p>")
         }
     });
 
@@ -166,11 +187,10 @@ $(document).ready(function () {
         document.location.reload(true);
     });
 
-
     function displayCharacterSelect(character) {
         let newDiv = $("<div>");
         let newDivPic = $("<div>");
-        let newDivStats = $("<div>");
+        let newDivStats = $("<aside>");
 
         newDiv.attr("class", "character-option");
         newDiv.attr("name", character.name);
@@ -189,6 +209,5 @@ $(document).ready(function () {
         newDiv.append(newDivStats);
 
         $("#character-row").append(newDiv)
-        // console.log(character);
     }
 });

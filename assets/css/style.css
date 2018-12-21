@@ -42,7 +42,6 @@ h1 {
     padding-top: 10px;
     font-style: italic; 
     font-size: 11px;
-    /* color: #0077b7; */
 }
 
 
@@ -55,8 +54,9 @@ h1 {
     justify-content: center;
     align-items: center;
     flex-basis: auto;
-    padding:10px;
+    padding:30px 10px 0px 10px;
     text-align: center;
+    max-height:250px;
 }
 
 .defender-option {
@@ -69,6 +69,16 @@ h1 {
 
 .attacker-option {
     border-color: #0077b7;
+    background-color: rgba(0, 119, 183,.3)
+}
+
+.character-option:hover {
+    transition: .2s ease;
+    background-color: rgba(0, 119, 183,.3)    
+}
+.enemies-option:hover {
+    transition: .2s ease;
+    background-color:rgba(255, 0, 0, .3);
 }
 
 .character-option:hover .character-pic,
@@ -96,13 +106,28 @@ h1 {
     justify-content: center;
 }
 
-#character-menu, #attacker-menu, #enemies-menu, #arena {
+#character-menu, #attacker-menu, #enemies-menu, #fight-section {
     color: yellow;
+}
+
+#fight-section, #fight-message {
+    padding:5px;
+}
+
+p {
+    padding-bottom: 5px;
+}
+
+
+#character-menu, #attacker-menu, #enemies-menu {
+    /* max-height:250px; */
 }
 
 .character-stats {
     opacity: 0;
-    transform: translate(-0%, -400%);
-    -ms-transform: translate(-0%, -400%);
+    float: left;
+    position: relative;
+    bottom: 140px;
+    text-align: center;
 }
   
