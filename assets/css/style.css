@@ -7,9 +7,6 @@ body {
 }
 
 
-
-
-
 header, main{
     display: flex;
     align-items: center;
@@ -17,9 +14,12 @@ header, main{
     flex-basis: auto;
     text-align: center;
     background-color:rgba(30, 30, 30, .8);
-    max-width:820px;
+    max-width:740px;
     margin:auto;
     box-sizing: border-box;
+    border:solid;
+    border-width:1px;
+    border-color:yellow;
 }
 
 header {
@@ -32,9 +32,17 @@ main {
     padding: 20px;
 }
 
+#logo {
+    border:solid;
+    border-width:0px 0px 2px 0px;
+    border-color: white;
+}
+
 h1 {
+    padding-top: 10px;
     font-style: italic; 
     font-size: 11px;
+    /* color: #0077b7; */
 }
 
 
@@ -51,12 +59,16 @@ h1 {
     text-align: center;
 }
 
+.defender-option {
+    background-color:rgba(255, 0, 0, .3);
+}
+
 .enemies-option, .defender-option {
     border-color: red;
 }
 
 .attacker-option {
-    border-color: green;
+    border-color: #0077b7;
 }
 
 .character-option:hover .character-pic,

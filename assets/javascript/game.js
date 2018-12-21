@@ -94,13 +94,17 @@ $(document).ready(function () {
 
             // // Add character-option class with defender-option class
             $(this).attr("class", "defender-option");
+
+            // Hide enemies-menu temporarily
+            $("#enemies-menu").hide();
         }
     });
 
     // Upon clicking attack button
     $("#attackBtn").on("click", function () {
         if (defenderSelected) {
-            let defender = $(".defender-option")
+            // Calculate damage variables
+            let defender = $(".defender-option");
             numAttacks++;
             let attackerHP = parseInt($(".attacker-option").attr("HP"));
             let defenderHP = parseInt(defender.attr("HP"));
@@ -108,8 +112,11 @@ $(document).ready(function () {
             let counterAttack = parseInt(defender.attr("counterAttackPower"));
             attackerHP = attackerHP - counterAttack;
             defenderHP = defenderHP - currentAttack;
+
+            // Update fight message
             $("#fight-message").html("You dealt " + currentAttack + " damage to " + defender.attr("name") + ". <br>" + defender.attr("name") + " dealt you " + counterAttack + " damage.");
 
+            // Update character stats for attacker and defender
             $(".attacker-option").attr("HP", attackerHP);
             defender.attr("HP", defenderHP);
             $(".attacker-option").find($(".character-stats")).empty();
@@ -119,16 +126,22 @@ $(document).ready(function () {
             defender.find($(".character-stats")).append("Counter Power: " + counterAttack + "<br>");
             defender.find($(".character-stats")).append("HP: " + defenderHP);
 
+            // Upon player death
             if (attackerHP <= 0) {
                 // Create Restart button 
                 $("#restart").append(restartBtn);
 
                 // Display losing message
                 $("#fight-message").text("You've been defeated! Hit restart to redeem yourself.")
-
-            } else if (defenderHP <= 0) {
+            } 
+            // Upon opponent death
+            else if (defenderHP <= 0) {
+                //Remove opponent
                 defender.detach();
                 defenderSelected = false;
+
+                // Show enemies menu again
+                $("#enemies-menu").show();
                 if ($('.enemies-option').length !== 0) {
                     $("#fight-message").text("You defeated " + defender.attr("name") + "! Select another opponent.")
                 }
