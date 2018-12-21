@@ -10,11 +10,11 @@ body {
 header, main{
     display: flex;
     align-items: center;
-    flex-direction: column;
+    /* flex-direction: column; */
     flex-basis: auto;
     text-align: center;
     background-color:rgba(30, 30, 30, .8);
-    max-width:740px;
+    max-width:783px;
     margin:auto;
     box-sizing: border-box;
     border:solid;
@@ -26,10 +26,19 @@ header {
     background-color:rgba(30, 30, 30, .8);
     margin-bottom: 20px;
     padding: 0px 20px 20px 20px;
+    flex-direction: column;
 }
 
 main {
     padding: 20px;
+    flex-direction: row;
+    align-items:center;
+    justify-content: space-around;
+}
+
+#fight-menu {
+    flex-direction: column;
+    max-width: 120px;
 }
 
 #logo {
@@ -57,6 +66,7 @@ h1 {
     padding:30px 10px 0px 10px;
     text-align: center;
     max-height:250px;
+    min-width: 147px;
 }
 
 .defender-option {
@@ -87,7 +97,7 @@ h1 {
 .defender-option:hover .character-pic {
     transition: .5s ease;
     opacity: 0.3;
-    -webkit-filter: hue-rotate(240deg) saturate(3.3);
+    -webkit-filter: hue-rotate(40deg) saturate(1.0);
   }
   
 .character-option:hover .character-stats,
@@ -110,7 +120,7 @@ h1 {
     color: yellow;
 }
 
-#fight-section, #fight-message {
+#fight-section, #message {
     padding:5px;
 }
 
@@ -129,5 +139,16 @@ p {
     position: relative;
     bottom: 140px;
     text-align: center;
+}
+
+button {
+    background-color: #0077b7;
+    color: yellow;
+    border: none;
+    padding: 5px;
+    margin: 5px;
+    /* text-align: center; */
+    text-decoration: none;
+    width:100px;
 }
   

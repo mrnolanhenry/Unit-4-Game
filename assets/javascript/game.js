@@ -64,6 +64,7 @@ $(document).ready(function () {
             //Display various menu headings
             $("#attacker-menu").prepend("<p>Your character:</p>")
             $("#enemies-menu").prepend("<p>Select an opponent:</p>")
+            $("#defender-menu").prepend("<p>Defender:</p>");
 
             // Move character to 'Your Character' attacker menu section 
             $("#attacker-row").append($(this));
@@ -78,7 +79,7 @@ $(document).ready(function () {
 
                 // Remove attack power stat from displaying
                 $(this).find($(".character-stats")).empty();
-                $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
+                // $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
                 $(this).find($(".character-stats")).append("HP: " + $(this).attr("HP"));
             });
 
@@ -92,11 +93,10 @@ $(document).ready(function () {
 
             // Move character to 'Defender' section 
             $("#defender-row").empty();
-            // $("#defender-menu").prepend("Defender: <br>");
             $("#defender-row").append($(this));
 
-            // Clear old fight message
-            $("#fight-message").empty();
+            // Clear old message
+            $("#message").empty();
 
             // // Add character-option class with defender-option class
             $(this).attr("class", "defender-option");
@@ -123,8 +123,8 @@ $(document).ready(function () {
             attackerHP = attackerHP - counterAttack;
             defenderHP = defenderHP - currentAttack;
 
-            // Update fight message
-            $("#fight-message").html("You dealt " + currentAttack + " damage to " + defender.attr("name") + ". <br>" + defender.attr("name") + " dealt you " + counterAttack + " damage.");
+            // Update message
+            $("#message").html("You dealt " + currentAttack + " damage to " + defender.attr("name") + ". <br>" + defender.attr("name") + " dealt you " + counterAttack + " damage.");
 
             // Update character stats for attacker and defender
             $(".attacker-option").attr("HP", attackerHP);
@@ -133,7 +133,7 @@ $(document).ready(function () {
             $(".attacker-option").find($(".character-stats")).append("Attack Power: " + currentAttack + "<br>");
             $(".attacker-option").find($(".character-stats")).append("HP: " + attackerHP);
             defender.find($(".character-stats")).empty();
-            defender.find($(".character-stats")).append("Counter Power: " + counterAttack + "<br>");
+            // defender.find($(".character-stats")).append("Counter Power: " + counterAttack + "<br>");
             defender.find($(".character-stats")).append("HP: " + defenderHP);
 
             // Upon player death
@@ -141,8 +141,11 @@ $(document).ready(function () {
                 // Create Restart button 
                 $("#restart").append(restartBtn);
 
+                // Hide attack button
+                $("#attackBtn").hide();
+
                 // Display losing message
-                $("#fight-message").text("You've been defeated! Hit restart to redeem yourself.")
+                $("#message").text("You've been defeated! Hit restart to redeem yourself.")
             }
             // Upon opponent death
             else if (defenderHP <= 0) {
@@ -155,12 +158,12 @@ $(document).ready(function () {
 
                 // If enemies remain
                 if ($('.enemies-option').length !== 0) {
-                // Hide fight-section until new opponent is selected
-                $("#fight-section").hide();
+                    // Hide fight-section until new opponent is selected
+                    $("#fight-section").hide();
 
                     // Show enemies menu again
                     $("#enemies-menu").show();
-                    $("#fight-message").text("You defeated " + defender.attr("name") + "!")
+                    $("#message").text("You defeated " + defender.attr("name") + "!")
                 }
                 else {
                     // Create Restart button
@@ -171,13 +174,13 @@ $(document).ready(function () {
                     $("#attackBtn").hide();
 
                     // Display winning message
-                    $("#fight-message").text("All opponents defeated! Warwick Davis would be proud.")
-                    
+                    $("#message").text("All opponents defeated! Warwick Davis would be proud.")
+
                 }
             }
         }
         else {
-            $("#fight-message").empty();
+            $("#message").empty();
             $("#defender-row").text("<p>No opponent selected.</p>")
         }
     });
