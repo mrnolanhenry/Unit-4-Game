@@ -32,24 +32,36 @@ $(document).ready(function () {
         HP: 120
     }
 
+    let boss = {
+        name: "Professor Flitwick",
+        picture: "<img src='assets/images/flitwick.png' />",
+        attackPower: 1,
+        counterAttackPower: 2,
+        HP: 280
+    }
+
     let characters = [wicket, weazel, wodibin, wollivan];
     let numAttacks = 0;
     let defenderSelected = false;
+    let bossDefeated = false;
 
     let restartBtn = $("<button>");
     restartBtn.text("Restart");
     restartBtn.attr("id", "restartBtn");
 
+    let bossBtn = $("<button>");
+    bossBtn.text("Restart");
+    bossBtn.attr("id", "bossBtn");
+
     let attackBtn = $("<button>");
     attackBtn.text("Attack");
     attackBtn.attr("id", "attackBtn");
-
 
     let startGame = function initGame() {
 
         // Display character selection menu
         characters.forEach(function (element) {
-            displayCharacterSelect(element);
+            displayCharacterSelect(element, $("#character-row"));
         });
         $("#character-menu").prepend("<p>Select a character:</p>")
 
@@ -59,9 +71,16 @@ $(document).ready(function () {
 
         // Create attack button
         $("#fight-section").prepend(attackBtn);
+
+        // Display boss in hidden boss selection menu
+        $("#boss-row").hide();
+        displayCharacterSelect(boss, $("#boss-row"));
+
     };
 
     startGame();
+
+    let bossOption = $('#boss-row').children($('.character-option'))
 
     // Upon clicking a character 
     $(".character-option").on("click", function () {
@@ -102,6 +121,9 @@ $(document).ready(function () {
             // Move character to 'Defender' section 
             $("#defender-row").empty();
             $("#defender-row").append($(this));
+
+            // Show attack button
+            $("#attackBtn").show();
 
             // Clear old message
             $("#message").empty();
@@ -153,10 +175,17 @@ $(document).ready(function () {
                 $("#attackBtn").hide();
 
                 // Display losing message
-                $("#message").text("You've been defeated! Hit restart to redeem yourself.")
+                $("#message").text("You've been defeated!")
             }
             // Upon opponent death
             else if (defenderHP <= 0) {
+
+                // If defender is the boss set variable bossDefeated to true
+                if (defender.attr("name") == boss.name) {
+                    console.log('boss defeated');
+                    bossDefeated = true;
+                }
+
                 //Remove opponent
                 defender.detach();
                 defenderSelected = false;
@@ -174,15 +203,22 @@ $(document).ready(function () {
                     $("#message").text("You defeated " + defender.attr("name") + "!")
                 }
                 else {
-                    // Create Restart button
-                    $("#restart").append(restartBtn);
-
                     // Hide attack button
                     $("#attackBtn").hide();
 
                     // Display winning message
                     $("#message").text("All opponents defeated! Warwick Davis would be proud.")
 
+                    if (!bossDefeated) {
+                        $("#boss").append(bossBtn);
+                    }
+                    else {
+                        // Create Restart button
+                        $("#restart").append(restartBtn);
+
+                        // Display final winning message
+                        $("#message").text("Well done! You staved off the Wizarding World invasion of the Star Wars universe!")
+                    }
                 }
             }
         }
@@ -197,7 +233,30 @@ $(document).ready(function () {
         document.location.reload(true);
     });
 
-    function displayCharacterSelect(character) {
+    // Upon clicking "false" restart button AKA boss button
+    $("#boss").on("click", bossBtn, function () {
+        $("#boss").empty();
+
+        // Give boss the enemies-option class
+        bossOption.attr("class", "enemies-option");
+
+        // Move boss character to enemies menu to select an opponent
+        $("#enemies-row").append($("#boss-row").contents());
+        console.log("boss should display");
+
+        // Remove attack power stat from displaying
+        bossOption.find($(".character-stats")).empty();
+        // $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
+        bossOption.find($(".character-stats")).append("HP: " + bossOption.attr("HP"));
+
+        // Show enemies menu again
+        $("#enemies-menu").show();
+
+        $("#message").text("What's this? " + boss.name + "!? Warwick Davis' cinematic universes are colliding!")
+
+    });
+
+    function displayCharacterSelect(character, row) {
         let newDiv = $("<div>");
         let newDivPic = $("<div>");
         let newDivStats = $("<aside>");
@@ -218,6 +277,6 @@ $(document).ready(function () {
         newDivStats.append("HP: " + newDiv.attr("HP"));
         newDiv.append(newDivStats);
 
-        $("#character-row").append(newDiv)
+        row.append(newDiv)
     }
 });
