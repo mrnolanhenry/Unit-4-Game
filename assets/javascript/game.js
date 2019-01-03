@@ -1,67 +1,42 @@
 $(document).ready(function () {
 
-    let wicket = {
-        name: "Wicket",
-        picture: "<img src='assets/images/Wicket-small.png' />",
-        attackPower: 6,
-        counterAttackPower: 7,
-        HP: 100
-    };
-
-    let weazel = {
-        name: "Weazel",
-        picture: "<img src='assets/images/Weazel-small.png' />",
-        attackPower: 9,
-        counterAttackPower: 5,
-        HP: 90
+    class Character {
+        constructor(name, picture, attackPower, counterAttackPower, HP) {
+            this.name = name;
+            this.picture = picture;
+            this.attackPower = attackPower;
+            this.counterAttackPower = counterAttackPower;
+            this.HP = HP;
+        }
     }
 
-    let wodibin = {
-        name: "Wodibin",
-        picture: "<img src='assets/images/Wodibin-small.png' />",
-        attackPower: 2,
-        counterAttackPower: 10,
-        HP: 140
-    }
-
-    let wollivan = {
-        name: "Wollivan",
-        picture: "<img src='assets/images/Wollivan-small.png' />",
-        attackPower: 3,
-        counterAttackPower: 9,
-        HP: 120
-    }
-
-    let boss = {
-        name: "Professor Flitwick",
-        picture: "<img src='assets/images/flitwick.png' />",
-        attackPower: 1,
-        counterAttackPower: 2,
-        HP: 280
-    }
+    let wicket = new Character("Wicket", "<img src='assets/images/Wicket-small.png' />", 6, 7, 100);
+    let weazel = new Character("Weazel", "<img src='assets/images/Weazel-small.png' />", 9, 5, 90);
+    let wodibin = new Character("Wodibin", "<img src='assets/images/Wodibin-small.png' />", 2, 10, 140);
+    let wollivan = new Character("Wollivan", "<img src='assets/images/Wollivan-small.png' />", 3, 9, 120);
+    let boss = new Character("Professor Flitwick", "<img src='assets/images/flitwick.png' />", 1, 2, 280);
 
     let characters = [wicket, weazel, wodibin, wollivan];
     let numAttacks = 0;
     let defenderSelected = false;
     let bossDefeated = false;
 
-    let restartBtn = $("<button>");
-    restartBtn.text("Restart");
-    restartBtn.attr("id", "restartBtn");
+    function createButton(text, id) {
+        let btn = $("<button>");
+        btn.text(text);
+        btn.attr("id", id);
+        return btn;
+    }
 
-    let bossBtn = $("<button>");
-    bossBtn.text("Restart");
-    bossBtn.attr("id", "bossBtn");
-
-    let attackBtn = $("<button>");
-    attackBtn.text("Attack");
-    attackBtn.attr("id", "attackBtn");
+    let restartBtn = createButton("Restart", "restartBtn");
+    let bossBtn = createButton("Restart", "bossBtn");
+    let attackBtn = createButton("Attack", "attackBtn");
 
     let startGame = function initGame() {
 
         // Display character selection menu
         characters.forEach(function (element) {
-            displayCharacterSelect(element, $("#character-row"));
+            addCharacter(element, $("#character-row"));
         });
         $("#character-menu").prepend("<p>Select a character:</p>")
 
@@ -69,12 +44,12 @@ $(document).ready(function () {
         $("#fight-section").hide();
         $("#defender-menu").hide();
 
-        // Create attack button
+        // Add attack button
         $("#fight-section").prepend(attackBtn);
 
         // Display boss in hidden boss selection menu
         $("#boss-row").hide();
-        displayCharacterSelect(boss, $("#boss-row"));
+        addCharacter(boss, $("#boss-row"));
 
     };
 
@@ -82,6 +57,7 @@ $(document).ready(function () {
 
     let bossOption = $('#boss-row').children($('.character-option'))
 
+    
     // Upon clicking a character 
     $(".character-option").on("click", function () {
 
@@ -142,6 +118,44 @@ $(document).ready(function () {
 
     // Upon clicking attack button
     $("#attackBtn").on("click", function () {
+        attack();
+    });
+
+    // Upon clicking restart button
+    $("#restart").on("click", restartBtn, function () {
+        document.location.reload(true);
+    });
+
+    // Upon clicking "false" restart button AKA boss button
+    $("#boss").on("click", bossBtn, function () {
+        startBoss();
+    });
+
+    function addCharacter(character, row) {
+        let newDiv = $("<div>");
+        let newDivPic = $("<div>");
+        let newDivStats = $("<aside>");
+
+        newDiv.attr("class", "character-option");
+        newDiv.attr("name", character.name);
+        newDiv.attr("attackPower", character.attackPower);
+        newDiv.attr("counterAttackPower", character.counterAttackPower);
+        newDiv.attr("HP", character.HP);
+        newDiv.append(character.name);
+
+        newDivPic.attr("class", "character-pic");
+        newDivPic.append(character.picture);
+        newDiv.append(newDivPic);
+
+        newDivStats.attr("class", "character-stats");
+        newDivStats.append("Attack Power: " + newDiv.attr("attackPower") + "<br>");
+        newDivStats.append("HP: " + newDiv.attr("HP"));
+        newDiv.append(newDivStats);
+
+        row.append(newDiv)
+    }
+
+    function attack() {
         if (defenderSelected) {
             // Calculate damage variables
             let defender = $(".defender-option");
@@ -168,7 +182,7 @@ $(document).ready(function () {
 
             // Upon player death
             if (attackerHP <= 0) {
-                // Create Restart button 
+                // Add Restart button 
                 $("#restart").append(restartBtn);
 
                 // Hide attack button
@@ -182,7 +196,6 @@ $(document).ready(function () {
 
                 // If defender is the boss set variable bossDefeated to true
                 if (defender.attr("name") == boss.name) {
-                    console.log('boss defeated');
                     bossDefeated = true;
                 }
 
@@ -193,7 +206,7 @@ $(document).ready(function () {
                 // Hide defender menu
                 $("#defender-menu").hide();
 
-                // If enemies remain
+                // If active enemies remain
                 if ($('.enemies-option').length !== 0) {
                     // Hide fight-section until new opponent is selected
                     $("#fight-section").hide();
@@ -213,7 +226,7 @@ $(document).ready(function () {
                         $("#boss").append(bossBtn);
                     }
                     else {
-                        // Create Restart button
+                        // Add Restart button
                         $("#restart").append(restartBtn);
 
                         // Display final winning message
@@ -226,15 +239,9 @@ $(document).ready(function () {
             $("#message").empty();
             $("#defender-row").text("<p>No opponent selected.</p>")
         }
-    });
+    }
 
-    // Upon clicking restart button
-    $("#restart").on("click", restartBtn, function () {
-        document.location.reload(true);
-    });
-
-    // Upon clicking "false" restart button AKA boss button
-    $("#boss").on("click", bossBtn, function () {
+    function startBoss() {
         $("#boss").empty();
 
         // Give boss the enemies-option class
@@ -242,41 +249,14 @@ $(document).ready(function () {
 
         // Move boss character to enemies menu to select an opponent
         $("#enemies-row").append($("#boss-row").contents());
-        console.log("boss should display");
 
         // Remove attack power stat from displaying
         bossOption.find($(".character-stats")).empty();
-        // $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
         bossOption.find($(".character-stats")).append("HP: " + bossOption.attr("HP"));
 
         // Show enemies menu again
         $("#enemies-menu").show();
 
         $("#message").text("What's this? " + boss.name + "!? Warwick Davis' cinematic universes are colliding!")
-
-    });
-
-    function displayCharacterSelect(character, row) {
-        let newDiv = $("<div>");
-        let newDivPic = $("<div>");
-        let newDivStats = $("<aside>");
-
-        newDiv.attr("class", "character-option");
-        newDiv.attr("name", character.name);
-        newDiv.attr("attackPower", character.attackPower);
-        newDiv.attr("counterAttackPower", character.counterAttackPower);
-        newDiv.attr("HP", character.HP);
-        newDiv.append(character.name);
-
-        newDivPic.attr("class", "character-pic");
-        newDivPic.append(character.picture);
-        newDiv.append(newDivPic);
-
-        newDivStats.attr("class", "character-stats");
-        newDivStats.append("Attack Power: " + newDiv.attr("attackPower") + "<br>");
-        newDivStats.append("HP: " + newDiv.attr("HP"));
-        newDiv.append(newDivStats);
-
-        row.append(newDiv)
     }
 });
