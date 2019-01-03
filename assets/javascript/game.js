@@ -56,6 +56,17 @@ $(document).ready(function () {
         row.append(newDiv)
     }
 
+    function selectCharacter(character) {
+        // If character clicked is from character-select menu
+        if (character.parent().attr("id") === "character-row") {
+            selectAttacker(character);
+        }
+        // Else if character clicked is from enemy-select menu (and an enemy hasn't already been selected)
+        else if (character.parent().attr("id") === "enemies-row" && !defenderSelected) {
+            selectDefender(character);
+        }
+    }
+
     function selectAttacker(character) {
         //Display various menu headings
         $("#attacker-menu").prepend("<p>Your character:</p>")
@@ -242,15 +253,7 @@ $(document).ready(function () {
 
     // Upon clicking a character 
     $(".character-option").on("click", function () {
-
-        // If character clicked is from character-select menu
-        if ($(this).parent().attr("id") === "character-row") {
-            selectAttacker($(this));
-        }
-        // Else if character clicked is from enemy-select menu (and an enemy hasn't already been selected)
-        else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
-            selectDefender($(this));
-        }
+        selectCharacter($(this));
     });
 
     // Upon clicking attack button
@@ -268,18 +271,47 @@ $(document).ready(function () {
         startBoss();
     });
 
-    // OPTIONAL KEY-PRESS HANDLER (INSTEAD OF CLICKING BUTTONS)
+    // OPTIONAL KEY-PRESS HANDLER (INSTEAD OF CLICKING BUTTONS OR CHARACTERS)
     document.onkeyup = function (event) {
         let input = event.key.toUpperCase();
-        if (input = "A" && $("#attackBtn").is(":visible")) {
+        let attackBtnVisible = $("#attackBtn").is(":visible");
+        let restartBtnVisible = restartBtn.is(":visible");
+        let bossBtnVisible = bossBtn.is(":visible");
+        let characterMenuVisible = $("#character-menu").is(":visible");
+        let enemiesMenuVisible = $("#enemies-menu").is(":visible");
+
+        // ATTACK USING "A" OR "ENTER"
+        if ((input === "A" || input === "ENTER") && attackBtnVisible) {
             attack();
-        } 
-        else if (input = "R" && restartBtn.is(":visible")) {
+        }
+        // RESTART USING "R" OR "ENTER"
+        else if ((input === "R" || input === "ENTER") && restartBtnVisible) {
             document.location.reload(true);
         }
-        else if (input = "R" && bossBtn.is(":visible")) {
+        // "FAKE" RESTART AKA START BOSS FIGHT USING "R" OR "ENTER"
+        else if ((input === "R" || input === "ENTER") && bossBtnVisible) {
             startBoss();
         }
-        
+        // SELECT CHARACTERS OR ENEMIES USING NUMBERS "1,2,3,4"
+        else if (!isNaN(input) && parseInt(input) > 0) {
+            if (characterMenuVisible && input <= $(".character-option:visible").length) {
+                let counter = 0;
+                $('#character-row').children($('.character-option:visible')).each(function () {
+                    counter++;
+                    if (parseInt(input) === counter) {
+                        selectCharacter($(this));
+                    }
+                });
+            }
+            else if (enemiesMenuVisible && input <= $(".enemies-option:visible").length) {
+                let counter = 0;
+                $('#enemies-row').children($('.enemies-option:visible')).each(function () {
+                    counter++;
+                    if (parseInt(input) === counter) {
+                        selectCharacter($(this));
+                    }
+                });
+            }
+        }
     }
 });
