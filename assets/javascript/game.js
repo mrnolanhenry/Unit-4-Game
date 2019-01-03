@@ -32,104 +32,6 @@ $(document).ready(function () {
     let bossBtn = createButton("Restart", "bossBtn");
     let attackBtn = createButton("Attack", "attackBtn");
 
-    let startGame = function initGame() {
-
-        // Display character selection menu
-        characters.forEach(function (element) {
-            addCharacter(element, $("#character-row"));
-        });
-        $("#character-menu").prepend("<p>Select a character:</p>")
-
-        // Hide fight-section and defender menu until attacker and defender are selected
-        $("#fight-section").hide();
-        $("#defender-menu").hide();
-
-        // Add attack button
-        $("#fight-section").prepend(attackBtn);
-
-        // Display boss in hidden boss selection menu
-        $("#boss-row").hide();
-        addCharacter(boss, $("#boss-row"));
-
-    };
-
-    startGame();
-
-    let bossOption = $('#boss-row').children($('.character-option'))
-
-    // Upon clicking a character 
-    $(".character-option").on("click", function () {
-
-        // If character clicked is from character-select menu
-        if ($(this).parent().attr("id") === "character-row") {
-
-            //Display various menu headings
-            $("#attacker-menu").prepend("<p>Your character:</p>")
-            $("#enemies-menu").prepend("<p>Select an opponent:</p>")
-            $("#defender-menu").prepend("<p>Defender:</p>");
-
-            // Move character to 'Your Character' attacker menu section 
-            $("#attacker-row").append($(this));
-            $(this).attr("class", "attacker-option");
-
-            // Move other characters to enemies menu to select an opponent
-            $("#enemies-row").append($("#character-row").contents());
-
-            // Add character-option class with enemies-option class
-            $('#enemies-row').children($('.character-option')).each(function () {
-                $(this).attr("class", "enemies-option");
-
-                // Remove attack power stat from displaying
-                $(this).find($(".character-stats")).empty();
-                // $(this).find($(".character-stats")).append("Counter Power: " + $(this).attr("counterAttackPower") + "<br>");
-                $(this).find($(".character-stats")).append("HP: " + $(this).attr("HP"));
-            });
-
-            // Remove original character-select menu
-            $("#character-menu").empty();
-        }
-
-        // If character clicked is from enemy-select menu (and an enemy hasn't already been selected)
-        else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
-            defenderSelected = true;
-
-            // Move character to 'Defender' section 
-            $("#defender-row").empty();
-            $("#defender-row").append($(this));
-
-            // Show attack button
-            $("#attackBtn").show();
-
-            // Clear old message
-            $("#message").empty();
-
-            // // Add character-option class with defender-option class
-            $(this).attr("class", "defender-option");
-
-            // Hide enemies-menu temporarily
-            $("#enemies-menu").hide();
-
-            // Show fight-section and defender menu again
-            $("#fight-section").show();
-            $("#defender-menu").show();
-        }
-    });
-
-    // Upon clicking attack button
-    $("#attackBtn").on("click", function () {
-        attack();
-    });
-
-    // Upon clicking restart button
-    $("#restart").on("click", restartBtn, function () {
-        document.location.reload(true);
-    });
-
-    // Upon clicking "false" restart button AKA boss button
-    $("#boss").on("click", bossBtn, function () {
-        startBoss();
-    });
-
     function addCharacter(character, row) {
         let newDiv = $("<div>");
         let newDivPic = $("<div>");
@@ -152,6 +54,60 @@ $(document).ready(function () {
         newDiv.append(newDivStats);
 
         row.append(newDiv)
+    }
+
+    function selectAttacker(character) {
+        //Display various menu headings
+        $("#attacker-menu").prepend("<p>Your character:</p>")
+        $("#enemies-menu").prepend("<p>Select an opponent:</p>")
+        $("#defender-menu").prepend("<p>Defender:</p>");
+
+        // Move character to 'Your Character' attacker menu section 
+        $("#attacker-row").append(character);
+        character.attr("class", "attacker-option");
+
+        // Move other characters to enemies menu to select an opponent
+        $("#enemies-row").append($("#character-row").contents());
+
+        // Give each character in enemies menu enemy properties
+        $('#enemies-row').children($('.character-option')).each(function () {
+            convertToEnemy($(this));
+        });
+
+        // Hide original character-select menu
+        $("#character-menu").hide();
+    }
+
+    function convertToEnemy(character) {
+        character.attr("class", "enemies-option");
+
+        // Remove attack power stat from displaying
+        character.find($(".character-stats")).empty();
+        character.find($(".character-stats")).append("HP: " + character.attr("HP"));
+    }
+
+    function selectDefender(character) {
+        defenderSelected = true;
+
+        // Move character to 'Defender' section 
+        $("#defender-row").empty();
+        $("#defender-row").append(character);
+
+        // Show attack button
+        $("#attackBtn").show();
+
+        // Clear old message
+        $("#message").empty();
+
+        // // Add character-option class with defender-option class
+        character.attr("class", "defender-option");
+
+        // Hide enemies-menu temporarily
+        $("#enemies-menu").hide();
+
+        // Show fight-section and defender menu again
+        $("#fight-section").show();
+        $("#defender-menu").show();
     }
 
     function attack() {
@@ -241,6 +197,8 @@ $(document).ready(function () {
     }
 
     function startBoss() {
+        let bossOption = $('#boss-row').children($('.character-option'))
+
         $("#boss").empty();
 
         // Give boss the enemies-option class
@@ -257,5 +215,71 @@ $(document).ready(function () {
         $("#enemies-menu").show();
 
         $("#message").text("What's this? " + boss.name + "!? Warwick Davis' cinematic universes are colliding!")
+    }
+
+    let startGame = function initGame() {
+
+        // Display character selection menu
+        characters.forEach(function (element) {
+            addCharacter(element, $("#character-row"));
+        });
+        $("#character-menu").prepend("<p>Select a character:</p>")
+
+        // Hide fight-section and defender menu until attacker and defender are selected
+        $("#fight-section").hide();
+        $("#defender-menu").hide();
+
+        // Add attack button
+        $("#fight-section").prepend(attackBtn);
+
+        // Add boss in hidden boss selection menu
+        $("#boss-row").hide();
+        addCharacter(boss, $("#boss-row"));
+
+    };
+
+    startGame();
+
+    // Upon clicking a character 
+    $(".character-option").on("click", function () {
+
+        // If character clicked is from character-select menu
+        if ($(this).parent().attr("id") === "character-row") {
+            selectAttacker($(this));
+        }
+        // Else if character clicked is from enemy-select menu (and an enemy hasn't already been selected)
+        else if ($(this).parent().attr("id") === "enemies-row" && !defenderSelected) {
+            selectDefender($(this));
+        }
+    });
+
+    // Upon clicking attack button
+    $("#attackBtn").on("click", function () {
+        attack();
+    });
+
+    // Upon clicking restart button
+    $("#restart").on("click", restartBtn, function () {
+        document.location.reload(true);
+    });
+
+    // Upon clicking "false" restart button AKA boss button
+    $("#boss").on("click", bossBtn, function () {
+        startBoss();
+    });
+
+    // OPTIONAL KEY-PRESS HANDLER (INSTEAD OF CLICKING BUTTONS)
+    document.onkeyup = function (event) {
+        let input = event.key.toUpperCase();
+        if (input = "A" && $("#attackBtn").is(":visible")) {
+            attack();
+        } 
+        else if (input = "R" && restartBtn.is(":visible")) {
+            document.location.reload(true);
+        }
+        else if (input = "R" && bossBtn.is(":visible")) {
+            startBoss();
+        }
+        
     }
 });
