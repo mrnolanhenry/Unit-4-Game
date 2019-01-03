@@ -57,7 +57,6 @@ $(document).ready(function () {
 
     let bossOption = $('#boss-row').children($('.character-option'))
 
-    
     // Upon clicking a character 
     $(".character-option").on("click", function () {
 

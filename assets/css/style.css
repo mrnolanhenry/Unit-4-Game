@@ -39,6 +39,7 @@ main {
 #fight-menu {
     flex-direction: column;
     max-width: 120px;
+    justify-content: end;
 }
 
 #logo {
@@ -123,6 +124,14 @@ h1 {
 
 #fight-section, #message {
     padding:5px;
+}
+
+#message {
+    min-height: 80px;
+}
+
+.character-stats {
+    min-height:32px;
 }
 
 p {
